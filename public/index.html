@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shortdrama AI Studio</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">S</span>
+        <div>
+          <strong>Shortdrama AI Studio</strong>
+          <small id="systemStatus">연결 확인 중</small>
+        </div>
+      </div>
+      <nav>
+        <button class="nav-button active" data-view="dashboard">제작 보드</button>
+        <button class="nav-button" data-view="characters">캐릭터</button>
+        <button class="nav-button" data-view="locations">로케이션</button>
+        <button class="nav-button" data-view="scripts">대본 생성</button>
+        <button class="nav-button" data-view="history">생성 히스토리</button>
+      </nav>
+    </aside>
+
+    <main class="app">
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">AI short drama production</p>
+          <h1>제작 바이블에서 장면 프롬프트까지 한 흐름으로</h1>
+        </div>
+        <button class="primary" id="refreshButton">새로고침</button>
+      </section>
+
+      <section class="view active" id="dashboard">
+        <div class="metrics">
+          <article><span id="metricCharacters">0</span><p>캐릭터</p></article>
+          <article><span id="metricLocations">0</span><p>로케이션</p></article>
+          <article><span id="metricScripts">0</span><p>생성 대본</p></article>
+          <article><span id="metricGenerations">0</span><p>생성 버전</p></article>
+        </div>
+        <div class="workspace-grid board-grid">
+          <form class="panel form-panel" id="projectBibleForm">
+            <div class="panel-header"><div><h2>프로젝트 바이블</h2><span>LLM이 항상 참고할 세계관과 제작 규칙</span></div></div>
+            <label>프로젝트명<input name="name" /></label>
+            <label>타깃 시청자<input name="audience" /></label>
+            <label>세계관<textarea name="world"></textarea></label>
+            <label>톤 앤 매너<textarea name="tone"></textarea></label>
+            <label>제작 규칙<textarea name="rules"></textarea></label>
+            <label>비주얼 스타일<textarea name="visual_style"></textarea></label>
+            <button class="primary" type="submit">바이블 저장</button>
+          </form>
+          <section class="panel">
+            <div class="panel-header"><div><h2>장면 보드</h2><span>대사, 이미지, 영상 프롬프트를 장면별로 재생성</span></div></div>
+            <div id="sceneBoard" class="scene-board empty">아직 생성된 장면이 없습니다.</div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="characters">
+        <div class="workspace-grid">
+          <form class="panel form-panel" id="characterForm">
+            <div class="panel-header"><div><h2>캐릭터 추가</h2><span>말투와 비주얼 고정값을 함께 관리</span></div></div>
+            <label>이름<input name="name" required placeholder="예: 서하린" /></label>
+            <label>역할<input name="role" placeholder="예: 주인공" /></label>
+            <label>성격 태그<input name="traits" placeholder="냉정함, 야망, 숨겨진 상처" /></label>
+            <label>말투<textarea name="speech_style" placeholder="짧고 단호하지만 감정이 흔들리면 존댓말이 무너진다"></textarea></label>
+            <label>비주얼 프롬프트<textarea name="visual_prompt" placeholder="20대 후반, 검은 단발, 차가운 눈빛, 미니멀한 블랙 수트"></textarea></label>
+            <div class="inline-actions"><button class="secondary" type="button" data-generate-prompt="character">이미지 생성 프롬프트 채우기</button></div>
+            <label>참고 이미지 업로드<input name="reference_file" type="file" accept="image/*" /></label>
+            <button class="primary" type="submit">캐릭터 저장</button>
+          </form>
+          <section class="panel">
+            <div class="panel-header"><div><h2>캐릭터 라이브러리</h2><span>대본 생성에서 다중 선택됩니다</span></div></div>
+            <div id="characterList" class="asset-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="locations">
+        <div class="workspace-grid">
+          <form class="panel form-panel" id="locationForm">
+            <div class="panel-header"><div><h2>로케이션 추가</h2><span>반복 사용 가능한 제작 세트로 저장</span></div></div>
+            <label>장소명<input name="name" required placeholder="예: 강남 고층 펜트하우스" /></label>
+            <label>분위기<input name="mood" placeholder="예: 차갑고 고급스러운 긴장감" /></label>
+            <label>시대/세계관<input name="era" placeholder="예: 현대 서울" /></label>
+            <label>조명<input name="lighting" placeholder="예: 야경, 유리 반사, 낮은 키라이트" /></label>
+            <label>비주얼 프롬프트<textarea name="visual_prompt" placeholder="luxury penthouse, Seoul skyline at night, reflective glass, cinematic"></textarea></label>
+            <div class="inline-actions"><button class="secondary" type="button" data-generate-prompt="location">이미지 생성 프롬프트 채우기</button></div>
+            <label>참고 이미지 업로드<input name="reference_file" type="file" accept="image/*" /></label>
+            <button class="primary" type="submit">로케이션 저장</button>
+          </form>
+          <section class="panel">
+            <div class="panel-header"><div><h2>로케이션 라이브러리</h2><span>대본 생성에서 다중 선택됩니다</span></div></div>
+            <div id="locationList" class="asset-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="scripts">
+        <form class="panel script-builder" id="scriptForm">
+          <div class="panel-header"><div><h2>대본 생성</h2><span>바이블 + 캐릭터 + 로케이션 + 장르를 묶어 장면 보드로 생성</span></div></div>
+          <div class="selection-grid">
+            <fieldset><legend>캐릭터 다중 선택</legend><div id="characterChoices" class="choice-list"></div></fieldset>
+            <fieldset><legend>로케이션 다중 선택</legend><div id="locationChoices" class="choice-list"></div></fieldset>
+            <fieldset><legend>장르 다중 선택</legend><div id="genreChoices" class="choice-list"></div></fieldset>
+          </div>
+          <div class="option-grid">
+            <label>플랫폼<select name="platform"><option>YouTube Shorts</option><option>TikTok</option><option>Instagram Reels</option></select></label>
+            <label>톤<select name="tone"><option>빠른 전개, 강한 후킹</option><option>감성적이고 몰입감 있게</option><option>어둡고 긴장감 있게</option><option>코믹하지만 반전 있게</option></select></label>
+            <label>회차 수<input name="episode_count" type="number" min="1" max="12" value="1" /></label>
+            <label>회차 분량<input name="duration_per_episode" value="60초" /></label>
+          </div>
+          <label>추가 지시<textarea name="prompt_input" placeholder="예: 첫 화 마지막에는 주인공이 배신자를 알아차리는 반전으로 끝내줘"></textarea></label>
+          <button class="primary large" type="submit">LLM으로 장면 보드 생성</button>
+        </form>
+      </section>
+
+      <section class="view" id="history">
+        <section class="panel wide">
+          <div class="panel-header"><div><h2>생성 히스토리</h2><span>대본과 장면 프롬프트의 버전 기록</span></div></div>
+          <div id="generationHistory" class="history-list empty">아직 생성 기록이 없습니다.</div>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="toast"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>
